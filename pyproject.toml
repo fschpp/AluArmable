@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aluarmable"
+version = "0.0.1"
+description = "Modelos armables en lámina de aluminio de lata con estructura impresa en 3D"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "GPL-2.0-only" }
+dependencies = ["numpy", "manifold3d", "pycairo"]
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff", "trimesh", "shapely", "lib3mf"]
+
+[project.scripts]
+aluarmable = "aluarmable.cli:main"
+aluarmable-probes = "aluarmable.cli:probes_main"
+
+[tool.setuptools.packages.find]
+include = ["aluarmable*"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
