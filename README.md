@@ -6,7 +6,7 @@ Estado y pendientes: [`PROGRESS.md`](PROGRESS.md).
 
 ## Estado
 
-Solo existe la pista física **R0P**: generador de probetas por consola. La GUI (R0 en adelante) no está hecha.
+Hecho: pista física **R0P** (probetas por consola) y el **núcleo de R1/R1b** (abrir, validar, medir y limpiar mallas). La GUI (R0 en adelante) no está hecha.
 
 ## Uso (probetas)
 
@@ -19,6 +19,13 @@ pytest && ruff check .
 
 Imprimir en PETG, boquilla 0,4 mm, capas 0,16 mm, 3 a 4 perímetros. Los criterios de aprobado y cómo
 registrar resultados están en [`docs/experimentos.md`](docs/experimentos.md).
+
+## Uso (modelos)
+
+```bash
+aluarmable info perro.stl --altura 1000        # mediciones; avisa si la malla no es cerrada
+aluarmable clean perro.stl --altura 1000 -o perro_limpio.stl --juego equilibrado
+```
 
 ## Licencia
 

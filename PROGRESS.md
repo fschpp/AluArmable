@@ -1,9 +1,11 @@
 # PROGRESS
 
-_Última actualización: 2026-11-01 (noche)_
+_Última actualización: 2026-11-01 (noche, 2.ª sesión)_
 
 ## Current Focus
-R0P en curso: repo `fschpp/AluArmable` con esqueleto, perfil de barra/tapa, 3MF mínimo y generador de probetas (`aluarmable-probes`); falta que el cliente las imprima. Antes (contexto): plan v3 de `aluarmable` (app Python + GTK4 para modelos armables en lámina de aluminio con estructura impresa en 3D) refinado al máximo y revisado por un agente independiente; falta que el cliente confirme las decisiones abiertas de §16 antes de empezar R0P (probetas) y R0.
+R1/R1b (núcleo, sin GUI) hecho: abrir/validar/escalar modelos, tabla de mediciones y limpieza de malla con valores dorados del perro. Siguiente: R2 (caras, costuras y grafo PBN) y la segunda entrega de R0P.
+
+(Anterior) R0P en curso: repo `fschpp/AluArmable` con esqueleto, perfil de barra/tapa, 3MF mínimo y generador de probetas (`aluarmable-probes`); falta que el cliente las imprima. Antes (contexto): plan v3 de `aluarmable` (app Python + GTK4 para modelos armables en lámina de aluminio con estructura impresa en 3D) refinado al máximo y revisado por un agente independiente; falta que el cliente confirme las decisiones abiertas de §16 antes de empezar R0P (probetas) y R0.
 
 ## Todo List
 
@@ -11,7 +13,8 @@ R0P en curso: repo `fschpp/AluArmable` con esqueleto, perfil de barra/tapa, 3MF 
 - [ ] Cliente: confirmar tiempo total (~400 h vs 180–270 h aceptadas; escenarios B ≈ 235 h, C ≈ 205 h), limpieza a ~450 caras y perfil «estándar» (§16)
 - [ ] Cliente: conseguir/medir latas e imprimir probetas R0P (E1–E4; luego E5, E6, E9)
 - [ ] R0 Esqueleto vivo (spike GtkGLArea: no se pudo probar GTK4 en el entorno de análisis)
-- [ ] R1 → R9 según §9 (R1b limpieza, R2/R2b costuras y módulos, R3 plantillas, R4–R7b piezas, R8 guía, R9 pulido)
+- [ ] R0 (ventana GTK4 + visor) y las vistas de R1/R1b en la GUI: pendientes, GTK4 no instalable en este entorno
+- [ ] R2 → R9 según §9 (R1b limpieza, R2/R2b costuras y módulos, R3 plantillas, R4–R7b piezas, R8 guía, R9 pulido)
 - [ ] Verificar licencias/versiones marcadas en la revisión (libnest2d, hypothesis, Python 3.11 vs numpy/scipy fijados, Wayland/EGL)
 
 ### [/] In Progress
@@ -20,6 +23,7 @@ R0P en curso: repo `fschpp/AluArmable` con esqueleto, perfil de barra/tapa, 3MF 
 - [/] Entrega del plan v3 al cliente y recepción de respuestas a §16
 
 ### [x] Done
+- [x] R1 + R1b núcleo (2026-11-01): `mesh_io` (STL/OBJ, validación con mensajes claros, orientación, escala), `measure` (tabla de §4.1), `cleanup` (QEM con controles; perro 650→448 caras, desvío medio 2,3 mm, máx 20,5; caras que fallan 122→8), CLI `aluarmable info|clean`, 29 pruebas en verde
 - [x] R0P primera entrega (2026-11-01): `params`, `profile` (barra, tapa, ranura con muesca), `export_3mf` (un 3MF por placa, reproducible), `probes` (E1 A, holguras, E4 pie/costado), `export_pdf` (plantilla E2), CLI, 20 pruebas y ruff en verde, README y `docs/experimentos.md`
 - [x] Entrevista de análisis, plan v1 y revisión 2 (perro 1 m)
 - [x] Investigación de estado del arte y verificación de referencias (A1, PyRigi, Fictiv, Printago; moderngl+GLArea no recuperable)

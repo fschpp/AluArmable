@@ -9,10 +9,10 @@ description = "Modelos armables en lámina de aluminio de lata con estructura im
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "GPL-2.0-only" }
-dependencies = ["numpy", "manifold3d", "pycairo"]
+dependencies = ["numpy", "scipy", "trimesh", "manifold3d", "pycairo"]
 
 [project.optional-dependencies]
-dev = ["pytest", "ruff", "trimesh", "shapely", "lib3mf"]
+dev = ["pytest", "ruff", "shapely", "lib3mf"]
 
 [project.scripts]
 aluarmable = "aluarmable.cli:main"
@@ -26,3 +26,4 @@ line-length = 100
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = ["slow: pruebas lentas (limpieza del perro)"]

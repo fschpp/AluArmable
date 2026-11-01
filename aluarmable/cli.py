@@ -6,7 +6,7 @@ import argparse
 import sys
 
 from . import __version__
-from .core import probes
+from .core import cleanup, measure, mesh_io, probes
 from .core.params import PROFILE_LIGHT, PROFILE_ROBUST, PROFILE_STANDARD, Params
 
 
@@ -25,14 +25,63 @@ def probes_main(argv: list[str] | None = None) -> int:
     return 0
 
 
+def info_main(argv: list[str]) -> int:
+    ap = argparse.ArgumentParser(prog="aluarmable info", description="Abre y mide un modelo.")
+    ap.add_argument("modelo")
+    ap.add_argument("--altura", type=float, help="tamaño final (mm) de la dimensión Z")
+    args = ap.parse_args(argv)
+    try:
+        m = mesh_io.load(args.modelo)
+    except mesh_io.MeshError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+    if args.altura:
+        m = mesh_io.scale_to_height(m, args.altura)
+    for w in m.warnings:
+        print(f"aviso: {w}")
+    print(measure.format_table(measure.measure(m)))
+    print(f"Caras que fallan (perfil estándar): {cleanup.failing_faces(m)}")
+    return 0
+
+
+def clean_main(argv: list[str]) -> int:
+    ap = argparse.ArgumentParser(prog="aluarmable clean", description="Limpia la malla (R1b).")
+    ap.add_argument("modelo")
+    ap.add_argument("-o", "--out", required=True, help="STL de salida")
+    ap.add_argument("--altura", type=float)
+    ap.add_argument("--juego", choices=list(cleanup.PRESETS), default="equilibrado")
+    args = ap.parse_args(argv)
+    try:
+        m = mesh_io.load(args.modelo)
+    except mesh_io.MeshError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+    if args.altura:
+        m = mesh_io.scale_to_height(m, args.altura)
+    pr = cleanup.PRESETS[args.juego]
+    out, n = cleanup.cleanup(m, pr.lmin, pr.angmin, pr.tol)
+    dev = cleanup.deviation(m, out)
+    import trimesh
+
+    trimesh.Trimesh(out.vertices, out.faces, process=False).export(args.out)
+    print(f"{len(m.faces)} -> {len(out.faces)} caras ({n} colapsos); Euler {out.euler}")
+    print(f"desvío (mm): media {dev['media']:.1f}, p99 {dev['p99']:.1f}, máx {dev['max']:.1f}")
+    print(f"caras que fallan: {cleanup.failing_faces(m)} -> {cleanup.failing_faces(out)}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
     if argv[:1] == ["probes"]:
         return probes_main(argv[1:])
+    if argv[:1] == ["info"]:
+        return info_main(argv[1:])
+    if argv[:1] == ["clean"]:
+        return clean_main(argv[1:])
     if argv[:1] == ["--version"]:
         print(__version__)
         return 0
-    print("uso: aluarmable probes [-o DIR] [--perfil estandar|ligero|robusto]")
+    print("uso: aluarmable {probes|info|clean} ... (ver --help de cada uno)")
     return 2
 
 
