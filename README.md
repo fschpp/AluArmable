@@ -25,6 +25,8 @@ registrar resultados están en [`docs/experimentos.md`](docs/experimentos.md).
 ```bash
 aluarmable info perro.stl --altura 1000        # mediciones; avisa si la malla no es cerrada
 aluarmable clean perro.stl --altura 1000 -o perro_limpio.stl --juego equilibrado
+aluarmable pbn perro.stl --altura 1000 --sin-fusion   # paneles, barras, nudos, costuras
+aluarmable sheets perro.stl --altura 1000 --limpiar equilibrado -o out/latas.pdf   # láminas en latas, PDF 1:1
 ```
 
 ## Licencia

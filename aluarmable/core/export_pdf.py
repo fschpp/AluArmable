@@ -88,3 +88,60 @@ def e2_template(path: str | Path, p: Profile | None = None) -> Path:
         ctx.show_page()
     surf.finish()
     return path
+
+
+A4_LAND = (297.0, 210.0)
+
+
+def cans_pdf(path, cans, prof: Profile | None = None, title: str = "AluArmable") -> Path:
+    """Una página A4 apaisada por lata: contorno de la lata (210 × 140), láminas numeradas
+    con la flecha «arriba», regla de 100 mm y versión de parámetros. Imprimir al 100 %."""
+    prof = prof or Profile()
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    surf = cairo.PDFSurface(str(path), A4_LAND[0] * MM, A4_LAND[1] * MM)
+    ctx = cairo.Context(surf)
+    ox, oy = (A4_LAND[0] - 210.0) / 2, 18.0
+    for n, can in enumerate(cans, start=1):
+        ctx.set_source_rgb(0.5, 0.5, 0.5)
+        ctx.set_line_width(0.3)
+        ctx.set_dash([3, 2])
+        ctx.rectangle(ox * MM, oy * MM, 210 * MM, 140 * MM)
+        ctx.stroke()
+        ctx.set_dash([])
+        for it in can.items:
+            pts = [(ox + x, oy + y) for x, y in it.poly]
+            ctx.set_source_rgb(0, 0, 0)
+            ctx.set_line_width(0.5)
+            _poly(ctx, pts)
+            ctx.stroke()
+            cx = sum(x for x, _ in pts) / len(pts)
+            cy = sum(y for _, y in pts) / len(pts)
+            ctx.set_font_size(7)
+            ext = ctx.text_extents(it.label)
+            ctx.move_to(cx * MM - ext.width / 2, cy * MM + ext.height / 2)
+            ctx.show_text(it.label)
+            if it.up is not None:  # flecha «arriba» del modelo
+                ex, ey = cx + it.up[0] * 6, cy + it.up[1] * 6
+                ctx.set_line_width(0.3)
+                ctx.move_to(cx * MM, (cy + 3) * MM)
+                ctx.line_to(ex * MM, (ey + 3) * MM)
+                ctx.stroke()
+        y = oy + 140 + 14
+        ctx.set_source_rgb(0, 0, 0)
+        ctx.set_line_width(0.4)
+        ctx.move_to(ox * MM, y * MM)
+        ctx.line_to((ox + 100) * MM, y * MM)
+        for i in range(0, 101, 10):
+            ctx.move_to((ox + i) * MM, y * MM)
+            ctx.line_to((ox + i) * MM, (y - (4 if i % 50 == 0 else 2.5)) * MM)
+        ctx.stroke()
+        ctx.set_font_size(7)
+        ctx.move_to(ox * MM, (y + 5) * MM)
+        ctx.show_text(
+            f"{title} - lata {n}/{len(cans)} - regla 100 mm (imprimir al 100 %) - "
+            f"parámetros {PARAMS_VERSION}, e = {prof.e} mm - vista desde afuera; cortar por dentro de la línea"
+        )
+        ctx.show_page()
+    surf.finish()
+    return path

@@ -6,7 +6,7 @@ import argparse
 import sys
 
 from . import __version__
-from .core import cleanup, measure, mesh_io, pbn, probes
+from .core import cleanup, export_pdf, measure, mesh_io, nesting, pbn, probes, sheets
 from .core.params import PROFILE_LIGHT, PROFILE_ROBUST, PROFILE_STANDARD, Params
 
 
@@ -92,12 +92,44 @@ def pbn_main(argv: list[str]) -> int:
     return 0
 
 
+def sheets_main(argv: list[str]) -> int:
+    ap = argparse.ArgumentParser(
+        prog="aluarmable sheets", description="Láminas, acomodo en latas y PDF 1:1."
+    )
+    ap.add_argument("modelo")
+    ap.add_argument("-o", "--out", default="out/latas.pdf")
+    ap.add_argument("--altura", type=float)
+    ap.add_argument("--limpiar", choices=list(cleanup.PRESETS), help="limpiar la malla antes")
+    args = ap.parse_args(argv)
+    try:
+        m = mesh_io.load(args.modelo)
+    except mesh_io.MeshError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+    if args.altura:
+        m = mesh_io.scale_to_height(m, args.altura)
+    if args.limpiar:
+        pr = cleanup.PRESETS[args.limpiar]
+        m, _ = cleanup.cleanup(m, pr.lmin, pr.angmin, pr.tol)
+    g = pbn.build_pbn(m, merge=False)
+    sh = sheets.make_sheets(g)
+    cans = nesting.nest(sh)
+    util = nesting.utilization(cans)
+    export_pdf.cans_pdf(args.out, cans)
+    print(f"{len(sh)} láminas ({sum(s.area for s in sh) / 100:.0f} cm²) en {len(cans)} latas")
+    print(f"aprovechamiento {util:.0%}" + (" (bajo: < 70 %)" if util < 0.70 else ""))
+    print(args.out)
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
     if argv[:1] == ["probes"]:
         return probes_main(argv[1:])
     if argv[:1] == ["info"]:
         return info_main(argv[1:])
+    if argv[:1] == ["sheets"]:
+        return sheets_main(argv[1:])
     if argv[:1] == ["pbn"]:
         return pbn_main(argv[1:])
     if argv[:1] == ["clean"]:
@@ -105,7 +137,7 @@ def main(argv: list[str] | None = None) -> int:
     if argv[:1] == ["--version"]:
         print(__version__)
         return 0
-    print("uso: aluarmable {probes|info|clean|pbn} ... (ver --help de cada uno)")
+    print("uso: aluarmable {probes|info|clean|pbn|sheets} ... (ver --help de cada uno)")
     return 2
 
 
