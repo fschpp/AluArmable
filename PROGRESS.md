@@ -3,7 +3,7 @@
 _Última actualización: 2026-11-01 (noche, 2.ª sesión)_
 
 ## Current Focus
-R1/R1b (núcleo, sin GUI) hecho: abrir/validar/escalar modelos, tabla de mediciones y limpieza de malla con valores dorados del perro. Siguiente: R2 (caras, costuras y grafo PBN) y la segunda entrega de R0P.
+R1/R1b (núcleo, sin GUI) hecho: abrir/validar/escalar modelos, tabla de mediciones y limpieza de malla con valores dorados del perro. Hecho también el núcleo de R2 (PBN y costuras). Siguiente: R2b (módulos y cortes), R3 (láminas con retranqueo y acomodo) y la segunda entrega de R0P.
 
 (Anterior) R0P en curso: repo `fschpp/AluArmable` con esqueleto, perfil de barra/tapa, 3MF mínimo y generador de probetas (`aluarmable-probes`); falta que el cliente las imprima. Antes (contexto): plan v3 de `aluarmable` (app Python + GTK4 para modelos armables en lámina de aluminio con estructura impresa en 3D) refinado al máximo y revisado por un agente independiente; falta que el cliente confirme las decisiones abiertas de §16 antes de empezar R0P (probetas) y R0.
 
@@ -23,6 +23,7 @@ R1/R1b (núcleo, sin GUI) hecho: abrir/validar/escalar modelos, tabla de medicio
 - [/] Entrega del plan v3 al cliente y recepción de respuestas a §16
 
 ### [x] Done
+- [x] R2 núcleo (2026-11-01): `pbn.py` (grafo panel–barra–nudo, fusión de coplanares, costuras por arista más larga con nudos T reutilizados, diedro y convexa/cóncava, IDs estables, invariantes); perro original: 78 cortes, 728 paneles sin fusión; limpio: 526; CLI `aluarmable pbn`; 35 pruebas en verde
 - [x] R1 + R1b núcleo (2026-11-01): `mesh_io` (STL/OBJ, validación con mensajes claros, orientación, escala), `measure` (tabla de §4.1), `cleanup` (QEM con controles; perro 650→448 caras, desvío medio 2,3 mm, máx 20,5; caras que fallan 122→8), CLI `aluarmable info|clean`, 29 pruebas en verde
 - [x] R0P primera entrega (2026-11-01): `params`, `profile` (barra, tapa, ranura con muesca), `export_3mf` (un 3MF por placa, reproducible), `probes` (E1 A, holguras, E4 pie/costado), `export_pdf` (plantilla E2), CLI, 20 pruebas y ruff en verde, README y `docs/experimentos.md`
 - [x] Entrevista de análisis, plan v1 y revisión 2 (perro 1 m)

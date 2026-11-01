@@ -6,7 +6,7 @@ import argparse
 import sys
 
 from . import __version__
-from .core import cleanup, measure, mesh_io, probes
+from .core import cleanup, measure, mesh_io, pbn, probes
 from .core.params import PROFILE_LIGHT, PROFILE_ROBUST, PROFILE_STANDARD, Params
 
 
@@ -70,18 +70,42 @@ def clean_main(argv: list[str]) -> int:
     return 0
 
 
+def pbn_main(argv: list[str]) -> int:
+    ap = argparse.ArgumentParser(
+        prog="aluarmable pbn", description="Inventario de paneles y barras."
+    )
+    ap.add_argument("modelo")
+    ap.add_argument("--altura", type=float)
+    ap.add_argument("--sin-fusion", action="store_true", help="no fusionar caras coplanares")
+    args = ap.parse_args(argv)
+    try:
+        m = mesh_io.load(args.modelo)
+    except mesh_io.MeshError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+    if args.altura:
+        m = mesh_io.scale_to_height(m, args.altura)
+    g = pbn.build_pbn(m, merge=not args.sin_fusion)
+    print(f"paneles {len(g.panels)}, barras {len(g.bars)}, nudos {len(g.nodes)} ", end="")
+    print(f"({sum(n.kind == 'costura-T' for n in g.nodes)} T), cortes de costura {g.cuts}")
+    print(f"Euler {g.euler}; invariantes: {g.check() or 'ok'}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
     if argv[:1] == ["probes"]:
         return probes_main(argv[1:])
     if argv[:1] == ["info"]:
         return info_main(argv[1:])
+    if argv[:1] == ["pbn"]:
+        return pbn_main(argv[1:])
     if argv[:1] == ["clean"]:
         return clean_main(argv[1:])
     if argv[:1] == ["--version"]:
         print(__version__)
         return 0
-    print("uso: aluarmable {probes|info|clean} ... (ver --help de cada uno)")
+    print("uso: aluarmable {probes|info|clean|pbn} ... (ver --help de cada uno)")
     return 2
 
 
