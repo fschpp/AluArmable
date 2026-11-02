@@ -402,7 +402,7 @@ Por eso el eje principal es **Ø 25 × 2,5 mm** y las patas **Ø 20 × 2 mm**. S
 
 ### 5.6 Módulos y uniones con bayoneta
 
-**Módulos.** El usuario elige **lazos de aristas** que dividen el modelo; cada lazo es un **corte**. Para el perro: cabeza, torso delantero, torso trasero, cuatro patas y cola (**8 módulos**, ninguno de más de ~60 cm; el torso entero mide 1,19 m, por eso se parte en dos). Ninguna cara queda partida entre dos módulos.
+**Módulos.** El usuario elige **lazos de aristas** que dividen el modelo; cada lazo es un **corte**. Para el perro: cabeza, torso delantero, torso trasero, cuatro patas y cola (**8 módulos**; el torso entero mide 1,19 m, por eso se parte en dos). **Corrección de R2b:** con ese reparto medido sobre el grafo, los dos torsos miden ~760 a ~790 mm (bbox), no ~60 cm: o se sube el límite de transporte a ~800 mm, o el torso se parte en tres (10 módulos). El límite `MAX_MODULE` es un parámetro y el panel de cortes avisa. Ninguna cara queda partida entre dos módulos.
 
 **Qué se vio en los datos.** Los lazos de corte **no son planos** (planitud rms 14 a 40 mm) y **no son circulares** (por ejemplo, 463 × 336 mm en el cuello, 312 × 167 mm en una pata trasera). Por lo tanto una bayoneta «de anillo» que gire junto con el módulo **no se puede hacer**. La solución del plan:
 
