@@ -3,7 +3,7 @@
 _Última actualización: 2026-11-01 (noche, 2.ª sesión)_
 
 ## Current Focus
-R1/R1b (núcleo, sin GUI) hecho: abrir/validar/escalar modelos, tabla de mediciones y limpieza de malla con valores dorados del perro. Hecho también el núcleo de R2 (PBN y costuras). Hecho también el núcleo de R3 (láminas, acomodo y PDF de latas). Siguiente: mejorar el acomodo (R3b: apareo de triángulos, objetivo ≥ 70 %), R2b (módulos y cortes) y la segunda entrega de R0P.
+R1/R1b (núcleo, sin GUI) hecho: abrir/validar/escalar modelos, tabla de mediciones y limpieza de malla con valores dorados del perro. Hecho también el núcleo de R2 (PBN y costuras). Hecho también el núcleo de R3 (láminas, acomodo y PDF de latas). Hecho el núcleo de R4 (barras y tapas en placas). Siguiente: R6 (nudos y raíces fusionadas; depende de E6), mejorar el acomodo (R3b: apareo de triángulos, objetivo ≥ 70 %), R2b (módulos y cortes) y la segunda entrega de R0P.
 
 (Anterior) R0P en curso: repo `fschpp/AluArmable` con esqueleto, perfil de barra/tapa, 3MF mínimo y generador de probetas (`aluarmable-probes`); falta que el cliente las imprima. Antes (contexto): plan v3 de `aluarmable` (app Python + GTK4 para modelos armables en lámina de aluminio con estructura impresa en 3D) refinado al máximo y revisado por un agente independiente; falta que el cliente confirme las decisiones abiertas de §16 antes de empezar R0P (probetas) y R0.
 
@@ -14,7 +14,7 @@ R1/R1b (núcleo, sin GUI) hecho: abrir/validar/escalar modelos, tabla de medicio
 - [ ] Cliente: conseguir/medir latas e imprimir probetas R0P (E1–E4; luego E5, E6, E9)
 - [ ] R0 Esqueleto vivo (spike GtkGLArea: no se pudo probar GTK4 en el entorno de análisis)
 - [ ] R0 (ventana GTK4 + visor) y las vistas de R1/R1b en la GUI: pendientes, GTK4 no instalable en este entorno
-- [ ] R3b: mejorar aprovechamiento de latas (hoy 51 %, 113 latas; plan: 72 %, 86)
+- [ ] R3b: mejorar aprovechamiento de latas (hoy 51 %, 113 latas; el 72 % del plan era un supuesto, no una medición; probé ángulos alineados a lados + contacto: 110 latas, no vale el costo; falta apareo de triángulos en paralelogramos)
 - [ ] R2b, R4 → R9 según §9 (R1b limpieza, R2/R2b costuras y módulos, R3 plantillas, R4–R7b piezas, R8 guía, R9 pulido)
 - [ ] Verificar licencias/versiones marcadas en la revisión (libnest2d, hypothesis, Python 3.11 vs numpy/scipy fijados, Wayland/EGL)
 
@@ -24,6 +24,7 @@ R1/R1b (núcleo, sin GUI) hecho: abrir/validar/escalar modelos, tabla de medicio
 - [/] Entrega del plan v3 al cliente y recepción de respuestas a §16
 
 ### [x] Done
+- [x] R4 núcleo (2026-11-02): `parts.py` (barra con perfil de escalón y tapa por arista, tramo libre = largo − raíces, avisos de tramo < 12 mm y diedro < 40°, giro 90°/45° si no entra en la cama, acomodo en placas 3MF, estimación de gramos/horas), CLI `aluarmable parts`; perro limpio: 793 barras, 1578 piezas, 27 placas, 2,83 kg y ~157 h solo de barras y tapas; 7 barras con tramo libre corto y 4 con diedro de 39,5° (justo bajo el mínimo de 40°) para decidir; 46 pruebas en verde. **Aún sin nudos (R6): las barras no se pueden armar entre sí.**
 - [x] R3 núcleo (2026-11-01): `sheets.py` (retranqueo e, esquinas cortadas por la raíz del nudo, puntas <25° recortadas a 8 mm, flecha «arriba»), `nesting.py` (acomodo por grilla de 1 mm y FFT, 4–8 orientaciones, separación 3 mm), `cans_pdf` (A4 apaisado, 1 lata por página, regla de 100 mm, versión de parámetros), CLI `aluarmable sheets`; perro limpio: 526 láminas, 16.929 cm², **113 latas, aprovechamiento 51 %** (rectángulos: ~147; objetivo del plan 86 latas / 72 %); 42 pruebas en verde
 - [x] R2 núcleo (2026-11-01): `pbn.py` (grafo panel–barra–nudo, fusión de coplanares, costuras por arista más larga con nudos T reutilizados, diedro y convexa/cóncava, IDs estables, invariantes); perro original: 78 cortes, 728 paneles sin fusión; limpio: 526; CLI `aluarmable pbn`; 35 pruebas en verde
 - [x] R1 + R1b núcleo (2026-11-01): `mesh_io` (STL/OBJ, validación con mensajes claros, orientación, escala), `measure` (tabla de §4.1), `cleanup` (QEM con controles; perro 650→448 caras, desvío medio 2,3 mm, máx 20,5; caras que fallan 122→8), CLI `aluarmable info|clean`, 29 pruebas en verde

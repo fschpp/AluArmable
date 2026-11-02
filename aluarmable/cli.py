@@ -6,7 +6,7 @@ import argparse
 import sys
 
 from . import __version__
-from .core import cleanup, export_pdf, measure, mesh_io, nesting, pbn, probes, sheets
+from .core import cleanup, export_pdf, measure, mesh_io, nesting, parts, pbn, probes, sheets
 from .core.params import PROFILE_LIGHT, PROFILE_ROBUST, PROFILE_STANDARD, Params
 
 
@@ -122,6 +122,38 @@ def sheets_main(argv: list[str]) -> int:
     return 0
 
 
+def parts_main(argv: list[str]) -> int:
+    ap = argparse.ArgumentParser(
+        prog="aluarmable parts", description="Barras y tapas imprimibles en 3MF (R4)."
+    )
+    ap.add_argument("modelo")
+    ap.add_argument("-o", "--out", default="out/barras")
+    ap.add_argument("--altura", type=float)
+    ap.add_argument("--limpiar", choices=list(cleanup.PRESETS))
+    args = ap.parse_args(argv)
+    try:
+        m = mesh_io.load(args.modelo)
+    except mesh_io.MeshError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+    if args.altura:
+        m = mesh_io.scale_to_height(m, args.altura)
+    if args.limpiar:
+        pr = cleanup.PRESETS[args.limpiar]
+        m, _ = cleanup.cleanup(m, pr.lmin, pr.angmin, pr.tol)
+    g = pbn.build_pbn(m, merge=False)
+    items = parts.make_bar_parts(g)
+    warns = [w for it in items for w in it.warnings]
+    _, est = parts.write_plates(items, args.out)
+    print(f"{len(items)} barras, {est['piezas']} piezas en {est['placas']} placas -> {args.out}")
+    print(f"estimado (solo barras y tapas): {est['gramos'] / 1000:.2f} kg, ~{est['horas']:.0f} h")
+    for w in warns[:20]:
+        print(f"aviso: {w}")
+    if len(warns) > 20:
+        print(f"... y {len(warns) - 20} avisos más")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
     if argv[:1] == ["probes"]:
@@ -130,6 +162,8 @@ def main(argv: list[str] | None = None) -> int:
         return info_main(argv[1:])
     if argv[:1] == ["sheets"]:
         return sheets_main(argv[1:])
+    if argv[:1] == ["parts"]:
+        return parts_main(argv[1:])
     if argv[:1] == ["pbn"]:
         return pbn_main(argv[1:])
     if argv[:1] == ["clean"]:
@@ -137,7 +171,7 @@ def main(argv: list[str] | None = None) -> int:
     if argv[:1] == ["--version"]:
         print(__version__)
         return 0
-    print("uso: aluarmable {probes|info|clean|pbn|sheets} ... (ver --help de cada uno)")
+    print("uso: aluarmable {probes|info|clean|pbn|sheets|parts} ... (ver --help de cada uno)")
     return 2
 
 

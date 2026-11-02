@@ -29,6 +29,10 @@ aluarmable pbn perro.stl --altura 1000 --sin-fusion   # paneles, barras, nudos, 
 aluarmable sheets perro.stl --altura 1000 --limpiar equilibrado -o out/latas.pdf   # láminas en latas, PDF 1:1
 ```
 
+```bash
+aluarmable parts perro.stl --altura 1000 --limpiar equilibrado -o out/barras   # 3MF de barras y tapas
+```
+
 ## Licencia
 
 GPL-2.0 (ver `LICENSE`); la elección definitiva queda abierta (plan §15).
