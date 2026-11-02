@@ -18,7 +18,7 @@ from .params import Profile
 from .pbn import PBN
 from .sheets import root_radius
 
-MAX_MODULE = 600.0  # tamaño máximo de un módulo (baúl del auto), mm
+MAX_MODULE = 800.0  # tamaño máximo de un módulo (baúl del auto: Fiat Siena 2014; sin medir), mm
 MAX_LOOP_NODES = 24  # aviso por encima de esto
 CLOSURE_FREE = 16.0  # tramo libre mínimo alrededor de un nudo de cierre, mm
 CLOSURES = (3, 6)  # mínimo y máximo de cierres de bayoneta por corte

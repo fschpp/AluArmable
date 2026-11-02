@@ -72,9 +72,9 @@ def test_dog_eight_modules():
     assert len(sp.modules) == 8 and len(sp.cuts) in (7, 8, 9)
     assert all(c.closed and not c.warnings for c in sp.cuts)
     assert not any("conexo" in w for w in sp.warnings())
-    # hallazgo: con 8 módulos los dos torsos miden ~760–790 mm, más que los 600 mm del plan
-    big = {m.name for m in sp.modules if m.size > modules.MAX_MODULE}
-    assert big == {"torso_del", "torso_tras"}
+    # con el límite de 800 mm (decisión del cliente) los 8 módulos cumplen; los torsos miden 760–790
+    assert modules.MAX_MODULE == 800.0 and not any(m.warnings for m in sp.modules)
+    assert {m.name for m in sp.modules if m.size > 700} == {"torso_del", "torso_tras"}
     assert all(sp.deficit(m.name) >= 3 for m in sp.modules)
     head = next(c for c in sp.cuts if {c.a, c.b} == {"cabeza", "torso_del"})
     assert head.perimeter == pytest.approx(2300, rel=0.1) or head.perimeter > 800
