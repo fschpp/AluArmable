@@ -14,7 +14,7 @@ R1/R1b (núcleo, sin GUI) hecho: abrir/validar/escalar modelos, tabla de medicio
 - [ ] Cliente: conseguir/medir latas e imprimir probetas R0P (E1–E4; luego E5, E6, E9)
 - [ ] R0 Esqueleto vivo (spike GtkGLArea: no se pudo probar GTK4 en el entorno de análisis)
 - [ ] R0 (ventana GTK4 + visor) y las vistas de R1/R1b en la GUI: pendientes, GTK4 no instalable en este entorno
-- [ ] R3b: mejorar aprovechamiento de latas (hoy 51 %, 113 latas; el 72 % del plan era un supuesto, no una medición; probé ángulos alineados a lados + contacto: 110 latas, no vale el costo; falta apareo de triángulos en paralelogramos)
+- [ ] R3b: mejorar aprovechamiento de latas (hoy 51 %, 113 latas; el 72 % del plan era un supuesto, no una medición; probé ángulos alineados a lados + contacto: 110 latas, no vale el costo; apareo de triángulos en paralelogramos IMPLEMENTADO (`nesting.pair_sheets`, opción `pair=True`) pero EMPEORA con esta heurística: 126 latas/45,7 % (umbrales laxos), 123/46,8 % (estrictos) contra 113/51 % sin parear; queda apagado. Lo que falta es un acomodo mejor para piezas grandes (p. ej. nest2D o búsqueda local), no más apareo)
 - [ ] R2b, R4 → R9 según §9 (R1b limpieza, R2/R2b costuras y módulos, R3 plantillas, R4–R7b piezas, R8 guía, R9 pulido)
 - [ ] Verificar licencias/versiones marcadas en la revisión (libnest2d, hypothesis, Python 3.11 vs numpy/scipy fijados, Wayland/EGL)
 

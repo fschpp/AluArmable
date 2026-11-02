@@ -111,3 +111,16 @@ def test_root_radius_grows_with_sharp_angle():
     radii = [sheets.root_radius(g, n.id, b, 3.5) for n in g.nodes for b in n.bars]
     assert max(radii) > 20 and min(radii) >= sheets.R_MIN
     assert math.isfinite(max(radii))
+
+
+def test_pairing_builds_disjoint_pieces_and_nests():
+    g = pbn.build_pbn(mesh_io.validate(_cube(150)), merge=False)
+    sh = sheets.make_sheets(g)
+    pieces = nesting.pair_sheets(sh)
+    for pc in pieces:
+        if len(pc.members) == 2:
+            a, b = (Polygon(m[1]) for m in pc.members)
+            assert a.distance(b) >= nesting.GAP - 1e-6 and not a.intersects(b)
+            assert Polygon(pc.hull).area >= pc.area - 1e-6
+    cans = nesting.nest(sh, pair=True)
+    assert sum(len(c.items) for c in cans) == len(sh)
